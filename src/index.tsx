@@ -1,6 +1,7 @@
 import * as esbuild from "esbuild-wasm";
 import { useEffect, useState, useRef } from "react";
 import ReactDOM from "react-dom";
+import { unpkgPathPlugin } from "./plugins/unpkg-path-plugin";
 
 // copy esbuild.wasm from node_modules to public folder
 
@@ -23,13 +24,28 @@ const App = () => {
 
   const onClick = async () => {
     if (!ref.current) return;
-    // transpile the input code (async)
-    const result = await ref.current.transform(input, {
-      loader: "jsx",
-      target: "es2015",
+
+    // // transpile the input code (async)
+    // const result = await ref.current.transform(input, {
+    //   loader: "jsx",
+    //   target: "es2015",
+    // });
+
+    // bundle the input file
+    const result = await ref.current.build({
+      entryPoints: ["index.js"],
+      bundle: true,
+      write: false,
+      plugins: [unpkgPathPlugin()],
     });
-    // save the transpiled code to state
-    setCode(result.code);
+
+    // console.log(result);
+    
+    // // save the transpiled code to state
+    // setCode(result.code);
+    
+    // save the bundled code to state
+    setCode(result.outputFiles[0].text);
   };
 
   return (
