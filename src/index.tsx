@@ -6,6 +6,7 @@ import { fetchPlugin } from "./plugins/fetch-plugin";
 
 const App = () => {
   const ref = useRef<any>();
+  const iframe = useRef<any>();
   const [input, setInput] = useState("");
   const [code, setCode] = useState("");
 
@@ -38,15 +39,25 @@ const App = () => {
       },
     });
 
-    // store the bundled code into state
-    setCode(result.outputFiles[0].text);
+    // emit a message event to pass data (bundled code) to iframe
+    iframe.current.contentWindow.postMessage(result.outputFiles[0].text, "*");
+    // inside iframe, an event listener is added to catch the data in message event
+
   };
 
-  // prepare the bundled code to be executed in iframe
+  // prepare the bundled code to be executed in iframe as srcDoc
   const html = `
-    <script>
-      ${code}
-    </script>
+    <html>
+      <head></head>
+      <body>
+        <div id="root"></div>
+      </body>
+      <script>
+        window.addEventListener('message', (event) => {
+          eval(event.data);
+        }, false)
+      </script>
+    </html>
   `;
 
   return (
@@ -61,7 +72,12 @@ const App = () => {
       <pre>{code}</pre>
       {/* execute user's code inside an iframe - SAFER for parent react app */}
       {/* "sandbox" attr can disable direct js communication between parent and child iframe */}
-      <iframe title="sandbox" sandbox="allow-scripts" srcDoc={html} />
+      <iframe
+        ref={iframe}
+        title="sandbox"
+        sandbox="allow-scripts"
+        srcDoc={html}
+      />
     </div>
   );
 };
