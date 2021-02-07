@@ -9,7 +9,9 @@ interface PreviewProps {
 // prepare the bundled code to be executed in iframe as srcDoc
 const html = `
     <html>
-      <head></head>
+      <head>
+        <style>html { background-color: white; }</style>
+      </head>
       <body>
         <div id="root"></div>
       </body>
