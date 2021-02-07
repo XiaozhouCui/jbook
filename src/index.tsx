@@ -5,12 +5,12 @@ import "bulmaswatch/superhero/bulmaswatch.min.css";
 import { unpkgPathPlugin } from "./plugins/unpkg-path-plugin";
 import { fetchPlugin } from "./plugins/fetch-plugin";
 import CodeEditor from "./components/code-editor";
+import Preview from "./components/preview";
 
 const App = () => {
   const ref = useRef<any>();
-  const iframe = useRef<any>();
   const [input, setInput] = useState("");
-
+  const [code, setCode] = useState("");
   // use esbuild to transpile and bundle user's code
   const startService = async () => {
     // store the esbuild object into ref.current
@@ -28,9 +28,6 @@ const App = () => {
     // ref.current is the esbuild object
     if (!ref.current) return;
 
-    // reset iframe html template after click
-    iframe.current.srcdoc = html;
-
     // get bundled code result from esbuild
     const result = await ref.current.build({
       entryPoints: ["index.js"],
@@ -43,31 +40,9 @@ const App = () => {
       },
     });
 
-    // emit a message event to pass data (bundled code) to iframe
-    iframe.current.contentWindow.postMessage(result.outputFiles[0].text, "*");
-    // inside iframe, an event listener is added to catch the data in message event
+    // store bundled code to state, to be passed down to "Preview" as props
+    setCode(result.outputFiles[0].text);
   };
-
-  // prepare the bundled code to be executed in iframe as srcDoc
-  const html = `
-    <html>
-      <head></head>
-      <body>
-        <div id="root"></div>
-      </body>
-      <script>
-        window.addEventListener('message', (event) => {
-          try {
-            eval(event.data);
-          } catch (err) {
-            const root = document.querySelector('#root');
-            root.innerHTML = '<div style="color: red;"><h4>Runtime Error</h4>' + err + '</div>';
-            console.error(err);
-          }
-        }, false)
-      </script>
-    </html>
-  `;
 
   return (
     <div>
@@ -75,21 +50,11 @@ const App = () => {
         initialValue="const a = 1;"
         onChange={(value) => setInput(value)}
       />
-      <textarea
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      ></textarea>
       <div>
         <button onClick={onClick}>Submit</button>
       </div>
-      {/* execute user's code inside an iframe - SAFER for parent react app */}
-      {/* "sandbox" attr can disable direct js communication between parent and child iframe */}
-      <iframe
-        ref={iframe}
-        title="preview"
-        sandbox="allow-scripts"
-        srcDoc={html}
-      />
+      {/* Preview is an iframe */}
+      <Preview code={code} />
     </div>
   );
 };
