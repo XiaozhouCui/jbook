@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import "./preview.css";
 
 // receive bundled code as props
 interface PreviewProps {
@@ -41,13 +42,14 @@ const Preview: React.FC<PreviewProps> = ({ code }) => {
   // execute user's code inside an iframe - SAFER for parent react app
   // "sandbox" attr can disable direct js communication between parent and child iframe
   return (
-    <iframe
-      style={{ backgroundColor: "white" }}
-      ref={iframe}
-      title="preview"
-      sandbox="allow-scripts"
-      srcDoc={html}
-    />
+    <div className="preview-wrapper">
+      <iframe
+        ref={iframe}
+        title="preview"
+        sandbox="allow-scripts"
+        srcDoc={html}
+      />
+    </div>
   );
 };
 
