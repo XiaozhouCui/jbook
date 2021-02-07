@@ -42,6 +42,7 @@ const Preview: React.FC<PreviewProps> = ({ code }) => {
   // "sandbox" attr can disable direct js communication between parent and child iframe
   return (
     <iframe
+      style={{ backgroundColor: "white" }}
       ref={iframe}
       title="preview"
       sandbox="allow-scripts"

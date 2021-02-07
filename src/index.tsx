@@ -7,7 +7,6 @@ const App = () => {
     <div>
       {/* Each CodeCell has 1 CodeEditor (monaco) and 1 Preview window (iframe) */}
       <CodeCell />
-      <CodeCell />
     </div>
   );
 };
