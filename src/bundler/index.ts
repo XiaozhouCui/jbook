@@ -1,0 +1,33 @@
+import * as esbuild from "esbuild-wasm";
+import { unpkgPathPlugin } from "../plugins/unpkg-path-plugin";
+import { fetchPlugin } from "../plugins/fetch-plugin";
+
+// service will be the esbuild service object
+let service: esbuild.Service;
+
+// use esbuild to transpile and bundle user's raw code
+const bundler = async (rawCode: string) => {
+  // if running for the first time, initialise esbuild service object and save it as "service"
+  if (!service) {
+    service = await esbuild.startService({
+      worker: true,
+      wasmURL: "https://unpkg.com/esbuild-wasm@0.8.27/esbuild.wasm",
+    });
+  }
+
+  // transpile and bundle user's raw code
+  const result = await service.build({
+    entryPoints: ["index.js"],
+    bundle: true,
+    write: false,
+    plugins: [unpkgPathPlugin(), fetchPlugin(rawCode)],
+    define: {
+      "process.env.NODE_ENV": '"production"',
+      global: "window",
+    },
+  });
+
+  return result.outputFiles[0].text;
+};
+
+export default bundler;
