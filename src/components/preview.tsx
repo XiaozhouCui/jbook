@@ -37,8 +37,10 @@ const Preview: React.FC<PreviewProps> = ({ code }) => {
     iframe.current.srcdoc = html;
 
     // emit a message event to pass data (bundled code) to iframe
-    iframe.current.contentWindow.postMessage(code, "*");
-    // inside iframe, an event listener is added to catch the data in message event
+    setTimeout(() => {
+      // inside iframe, an event listener is added to catch the data in message event
+      iframe.current.contentWindow.postMessage(code, "*");
+    }, 50); // allow 50 ms to setup event listener
   }, [code]);
 
   // execute user's code inside an iframe - SAFER for parent react app
