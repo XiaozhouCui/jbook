@@ -4,6 +4,7 @@ import "./preview.css";
 // receive bundled code as props
 interface PreviewProps {
   code: string;
+  err: string;
 }
 
 // prepare the bundled code to be executed in iframe as srcDoc
@@ -40,7 +41,7 @@ const html = `
     </html>
   `;
 
-const Preview: React.FC<PreviewProps> = ({ code }) => {
+const Preview: React.FC<PreviewProps> = ({ code, err }) => {
   const iframe = useRef<any>();
 
   useEffect(() => {
@@ -64,6 +65,7 @@ const Preview: React.FC<PreviewProps> = ({ code }) => {
         sandbox="allow-scripts"
         srcDoc={html}
       />
+      {err && <div className="preview-error">{err}</div>}
     </div>
   );
 };

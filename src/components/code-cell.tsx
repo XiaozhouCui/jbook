@@ -7,6 +7,7 @@ import Resizable from "./resizable";
 // A CodeCell has 1 code editor (monaco) and 1 preview window (iframe)
 const CodeCell = () => {
   const [input, setInput] = useState("");
+  const [err, setErr] = useState("");
   const [code, setCode] = useState("");
 
   // Debouncing: only run bundler after user STOPPED typing for 1 second
@@ -15,7 +16,8 @@ const CodeCell = () => {
       // bundle the raw input code with esbuild
       const output = await bundle(input);
       // store bundled code to state, to be passed down to "Preview" component as props
-      setCode(output);
+      setCode(output.code);
+      setErr(output.err);
     }, 1000);
 
     // clear timer when user keep typing
@@ -34,7 +36,7 @@ const CodeCell = () => {
           />
         </Resizable>
         {/* Preview is an iframe */}
-        <Preview code={code} />
+        <Preview code={code} err={err} />
       </div>
     </Resizable>
   );
