@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import MDEditor from "@uiw/react-md-editor";
+import "./text-editor.css";
 
 const TextEditor: React.FC = () => {
   const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState("# Header");
 
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -32,16 +34,18 @@ const TextEditor: React.FC = () => {
   // the opened md-editor, textarea input field
   if (editing) {
     return (
-      <div ref={ref}>
-        <MDEditor />
+      <div className="text-editor" ref={ref}>
+        <MDEditor value={value} onChange={(v) => setValue(v || '')} />
       </div>
     );
   }
 
   // the closed md-editor, only showing the markdown
   return (
-    <div onClick={() => setEditing(true)}>
-      <MDEditor.Markdown source={"# Header"} />
+    <div className="text-editor card" onClick={() => setEditing(true)}>
+      <div className="card-content">
+        <MDEditor.Markdown source={value} />
+      </div>
     </div>
   );
 };
