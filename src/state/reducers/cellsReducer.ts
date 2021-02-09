@@ -1,5 +1,28 @@
-const index = () => {
+import { Cell } from "../cell";
+import { Action } from "../actions";
+import { ActionType } from "../action-types";
 
+interface CellsState {
+  loading: boolean;
+  error: string | null;
+  order: string[];
+  data: {
+    [key: string]: Cell;
+  };
 }
 
-export default index
+const initialState: CellsState = {
+  loading: false,
+  error: null,
+  order: [],
+  data: {},
+};
+
+const reducer = (
+  state: CellsState = initialState,
+  action: Action
+): CellsState => {
+  return state;
+};
+
+export default reducer;
