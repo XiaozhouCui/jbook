@@ -3,13 +3,15 @@ import "./add-cell.css";
 
 interface AddCellProps {
   nextCellId: string | null;
+  // force last add-cell buttons to be visible when no cells on screen
+  forceVisible?: boolean; // optional props
 }
 
-const AddCell: React.FC<AddCellProps> = ({ nextCellId }) => {
+const AddCell: React.FC<AddCellProps> = ({ forceVisible, nextCellId }) => {
   const { insertCellBefore } = useActions();
 
   return (
-    <div className="add-cell">
+    <div className={`add-cell ${forceVisible && "force-visible"}`}>
       <div className="add-buttons">
         <button
           className="button is-rounded is-primary is-small"

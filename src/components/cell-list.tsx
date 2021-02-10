@@ -19,7 +19,8 @@ const CellList: React.FC = () => {
   return (
     <div>
       {renderedCells}
-      <AddCell nextCellId={null} />
+      {/* always show the add cell buttons when there is no cell shown on screen */}
+      <AddCell forceVisible={cells.length === 0} nextCellId={null} />
     </div>
   );
 };
