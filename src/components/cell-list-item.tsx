@@ -3,6 +3,7 @@ import { Cell } from "../state";
 import ActionBar from "./action-bar";
 import CodeCell from "./code-cell";
 import TextEditor from "./text-editor";
+import "./cell-list-item.css"
 
 interface CellListItemProps {
   cell: Cell;
@@ -11,14 +12,15 @@ interface CellListItemProps {
 const CellListItem: React.FC<CellListItemProps> = ({ cell }) => {
   let child: JSX.Element;
   if (cell.type === "code") {
+    // Each CodeCell has 1 CodeEditor (monaco) and 1 Preview window (iframe)    
     child = <CodeCell cell={cell} />;
   } else {
     child = <TextEditor cell={cell} />;
   }
   return (
-    <div>
-      <ActionBar id={cell.id} />
+    <div className="cell-list-item">
       {child}
+      <ActionBar id={cell.id} />
     </div>
   );
 };
