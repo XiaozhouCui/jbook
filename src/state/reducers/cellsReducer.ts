@@ -49,7 +49,7 @@ const reducer = produce(
         state.order[index] = state.order[targetIndex];
         state.order[targetIndex] = action.payload.id;
         return state;
-      case ActionType.INSERT_CELL_BEFORE:
+      case ActionType.INSERT_CELL_AFTER:
         const cell: Cell = {
           content: "",
           type: action.payload.type,
@@ -62,10 +62,10 @@ const reducer = produce(
         // add new cell ID into state.order array
         const foundIndex = state.order.findIndex(id => id === action.payload.id)
         if (foundIndex < 0) {
-          // if no ID in payload, meaning the cell will be added in the end
-          state.order.push(cell.id)
+          // if no ID in payload, meaning the cell will be added in the very top
+          state.order.unshift(cell.id)
         } else {
-          state.order.splice(foundIndex, 0, cell.id)
+          state.order.splice(foundIndex + 1, 0, cell.id)
         }
 
         return state;

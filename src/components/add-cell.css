@@ -5,6 +5,11 @@
   margin: 10px 0;
 }
 
+/* .add-cell:active {
+  opacity: 0 !important;
+  transition: opacity 0s;
+} */
+
 .add-cell:hover {
   opacity: 1;
 }
