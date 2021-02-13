@@ -1,12 +1,17 @@
+import { Dispatch } from "redux";
 import { CellTypes } from "./../cell";
 import { ActionType } from "../action-types";
 import {
-  Direction,
   UpdateCellAction,
   MoveCellAction,
   DeleteCellAction,
   InsertCellAfterAction,
+  BundleStartAction,
+  BundleCompleteAction,
+  Direction,
+  Action,
 } from "./../actions/index";
+import bundle from "../../bundler";
 
 export const updateCell = (id: string, content: string): UpdateCellAction => {
   return {
@@ -37,5 +42,31 @@ export const insertCellAfter = (
   return {
     type: ActionType.INSERT_CELL_AFTER,
     payload: { id, type: cellType },
+  };
+};
+
+// redux-thunk will be needed
+export const createBundle = (cellId: string, input: string) => {
+  // "Dispatch" from redux is the type of dispatch function
+  return async (dispatch: Dispatch<Action>) => {
+    dispatch({
+      type: ActionType.BUNDLE_START,
+      payload: {
+        cellId,
+      },
+    });
+
+    const result = await bundle(input);
+
+    dispatch({
+      type: ActionType.BUNDLE_COMPLETE,
+      payload: {
+        cellId,
+        bundle: {
+          code: result.code,
+          err: result.err,
+        },
+      },
+    });
   };
 };
