@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import { useTypedSelector } from "../hooks/use-typed-selector";
 import CellListItem from "./cell-list-item";
 import AddCell from "./add-cell";
+import "./cell-list.css";
 
 const CellList: React.FC = () => {
   // get the array of data in order
@@ -17,7 +18,7 @@ const CellList: React.FC = () => {
   ));
 
   return (
-    <div>
+    <div className="cell-list">
       {/* always show the add cell buttons when there is no cell shown on screen */}
       <AddCell forceVisible={cells.length === 0} previousCellId={null} />
       {renderedCells}
