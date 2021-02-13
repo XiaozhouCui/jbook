@@ -45,7 +45,7 @@ export const insertCellAfter = (
   };
 };
 
-// redux-thunk will be needed
+// async: redux-thunk is used here
 export const createBundle = (cellId: string, input: string) => {
   // "Dispatch" from redux is the type of dispatch function
   return async (dispatch: Dispatch<Action>) => {

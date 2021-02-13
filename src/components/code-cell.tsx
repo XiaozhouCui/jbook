@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import CodeEditor from "./code-editor";
 import Preview from "./preview";
-import bundle from "../bundler";
 import Resizable from "./resizable";
 import { Cell } from "../state";
 import { useActions } from "../hooks/use-actions";
+import { useTypedSelector } from "../hooks/use-typed-selector";
 
 interface CodeCellProps {
   cell: Cell;
@@ -12,30 +12,32 @@ interface CodeCellProps {
 
 // A CodeCell has 1 code editor (monaco) and 1 preview window (iframe)
 const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
-  const [err, setErr] = useState("");
-  const [code, setCode] = useState("");
-
-  const { updateCell } = useActions();
+  const { updateCell, createBundle } = useActions();
+  const bundle = useTypedSelector((state) => state.bundles[cell.id]);
 
   // Debouncing: only run bundler after user STOPPED typing for 1 second
   useEffect(() => {
     const timer = setTimeout(async () => {
-      // bundle the raw input code with esbuild
-      const output = await bundle(cell.content);
-      // store bundled code to state, to be passed down to "Preview" component as props
-      setCode(output.code);
-      setErr(output.err);
+      // async bundle the raw input code with esbuild
+      createBundle(cell.id, cell.content);
+      // bundled code will be saved in store.bundles, and passed down to "Preview" component as props
     }, 1000);
 
     // clear timer when user keep typing
     return () => {
       clearTimeout(timer);
     };
-  }, [cell.content]);
+  }, [cell.content, cell.id]);
 
   return (
     <Resizable direction="vertical">
-      <div style={{ height: "calc(100% - 10px)", display: "flex", flexDirection: "row" }}>
+      <div
+        style={{
+          height: "calc(100% - 10px)",
+          display: "flex",
+          flexDirection: "row",
+        }}
+      >
         <Resizable direction="horizontal">
           <CodeEditor
             initialValue={cell.content}
@@ -43,7 +45,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
           />
         </Resizable>
         {/* Preview is an iframe */}
-        <Preview code={code} err={err} />
+        {bundle && <Preview code={bundle.code} err={bundle.err} />}
       </div>
     </Resizable>
   );

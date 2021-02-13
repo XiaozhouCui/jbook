@@ -5,11 +5,13 @@ import { ActionType } from "../action-types";
 // returned state from reducer
 interface BundlesState {
   // key: current cell ID
-  [key: string]: {
-    loading: boolean;
-    code: string;
-    err: string;
-  };
+  [key: string]:
+    | {
+        loading: boolean;
+        code: string;
+        err: string;
+      }
+    | undefined;
 }
 
 const initialState: BundlesState = {};
