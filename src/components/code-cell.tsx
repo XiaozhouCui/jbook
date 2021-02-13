@@ -16,16 +16,33 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
   const { updateCell, createBundle } = useActions();
   const bundle = useTypedSelector((state) => state.bundles[cell.id]);
 
+  const cumulativeCode = useTypedSelector((state) => {
+    const { data, order } = state.cells;
+    const orderedCells = order.map((id) => data[id]);
+
+    // join codes in all cells to be bundled together
+    const cumulativeCodeArray = [];
+    for (let c of orderedCells) {
+      if (c.type === "code") {
+        cumulativeCodeArray.push(c.content);
+      }
+      if (c.id === cell.id) {
+        break;
+      }
+    }
+    return cumulativeCodeArray;
+  });
+
   // Debouncing: only run bundler after user STOPPED typing for 1 second
   useEffect(() => {
     // create an initial bundle and stop
     if (!bundle) {
-      createBundle(cell.id, cell.content);
+      createBundle(cell.id, cumulativeCode.join('\n'));
       return;
     }
     const timer = setTimeout(async () => {
       // async bundle the raw input code with esbuild, 1 second after typing stopped
-      createBundle(cell.id, cell.content);
+      createBundle(cell.id, cumulativeCode.join('\n'));
       // bundled code will be saved in store.bundles, and passed down to "Preview" component as props
     }, 1000);
 
@@ -34,7 +51,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
       clearTimeout(timer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cell.content, cell.id, createBundle]);
+  }, [cumulativeCode.join('\n'), cell.id, createBundle]);
 
   return (
     <Resizable direction="vertical">
