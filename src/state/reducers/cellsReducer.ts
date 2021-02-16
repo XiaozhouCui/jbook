@@ -22,9 +22,8 @@ This is an interactive coding environment. You can write JavaScript, see it exec
 - Add new cells by howvering on the divider between each cell
 `
 
-const sampleCode = `
-import { useState } from 'react';
-import ReactDOM from 'react-dom';
+const sample1 = 
+`import { useState } from 'react';
 
 const Counter = () => {
   const [count, setCount] = useState(0);
@@ -35,25 +34,43 @@ const Counter = () => {
     </div>
   );
 };
-
 // Display any variable or React Component by calling "show()"
-show(<Counter />);
-`
+show(<Counter />);`
+
+const sample2 = 
+`const App = () => {
+  return (
+    <div>
+      <h3>App Says Hi!</h3>
+      <i>Counter component will be rendered below...</i>
+      <hr />
+      {/* Counter declared in the previous cell can be referenced here */}
+      <Counter />
+    </div>
+  );
+};
+
+show(<App />);`
 
 const initialState: CellsState = {
   loading: false,
   error: null,
-  order: ["introduction", "example"],
+  order: ["introduction", "example1", "example2"],
   data: {
     introduction: {
       id: "introduction",
       type: "text",
       content: intro,
     },
-    example: {
-      id: "example",
+    example1: {
+      id: "example1",
       type: "code",
-      content: sampleCode,
+      content: sample1,
+    },
+    example2: {
+      id: "example2",
+      type: "code",
+      content: sample2,
     },
   },
 };
