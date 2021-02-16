@@ -1,30 +1,18 @@
-import { createStore, applyMiddleware } from "redux";
+import { createStore, applyMiddleware, compose } from "redux";
 import thunk from "redux-thunk";
 import reducers from "./reducers";
-import { ActionType } from "./action-types";
+// import { ActionType } from "./action-types";
 
-export const store = createStore(reducers, {}, applyMiddleware(thunk));
+declare global {
+  interface Window {
+    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
+  }
+}
 
-// MANUALLY TEST REDUX
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-store.dispatch({
-  type: ActionType.INSERT_CELL_AFTER,
-  payload: { id: null, type: "code" },
-});
-
-store.dispatch({
-  type: ActionType.INSERT_CELL_AFTER,
-  payload: { id: null, type: "text" },
-});
-
-store.dispatch({
-  type: ActionType.INSERT_CELL_AFTER,
-  payload: { id: null, type: "code" },
-});
-
-store.dispatch({
-  type: ActionType.INSERT_CELL_AFTER,
-  payload: { id: null, type: "text" },
-});
-
-console.log(store.getState());
+export const store = createStore(
+  reducers,
+  {},
+  composeEnhancers(applyMiddleware(thunk))
+);

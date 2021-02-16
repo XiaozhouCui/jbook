@@ -29,9 +29,16 @@ const bundle = async (rawCode: string) => {
       jsxFactory: "_React.createElement",
       jsxFragment: "_React.Fragment",
     });
-    return { code: result.outputFiles[0].text, err: "" };
-  } catch (error) {
-    return { code: "", err: error.message };
+
+    return {
+      code: result.outputFiles[0].text,
+      err: "",
+    };
+  } catch (err) {
+    return {
+      code: "",
+      err: err.message,
+    };
   }
 };
 

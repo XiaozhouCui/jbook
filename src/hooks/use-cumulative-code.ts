@@ -13,14 +13,14 @@ export const useCumulativeCode = (cellId: string) => {
 
         if (typeof value === 'object') {
           if (value.$$typeof && value.props) {
-            _ReactDOM.render(value, root)
+            _ReactDOM.render(value, root);
           } else {
             root.innerHTML = JSON.stringify(value);
           }
         } else {
-          root.innerHTML = value
+          root.innerHTML = value;
         }
-      }
+      };
     `;
     const showFuncNoOp = "var show = () => {}";
 
