@@ -1,6 +1,6 @@
 .cell-list {
   /* user can scroll below the bottom by 50% view height */
-  margin: 0 25px 50vh;
+  margin: 0 50px 20vh;
 }
 
 .react-draggable-transparent-selection .cell-list {
